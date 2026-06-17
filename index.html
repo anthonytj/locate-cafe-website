@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Locate Cafe — Medan</title>
+  <link rel="icon" href="assets/LocateCafeNew.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:       #1B2A3A;
+      --navy-deep:  #0E1A26;
+      --gold:       #C8972A;
+      --gold-light: #E8BF6A;
+      --brick:      #8B3A2A;
+      --parchment:  #F5EDD8;
+      --parchment2: #EDE0C4;
+      --green:      #2E4A3A;
+      --green-light:#4A7A5A;
+      --white:      #FFFDF7;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--navy-deep);
+      color: var(--parchment);
+      overflow-x: hidden;
+    }
+
+    /* ── LANGUAGE STRIP ── */
+    .lang-strip {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0;
+      padding: 0 2rem;
+      background: rgba(14, 26, 38, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200, 151, 42, 0.2);
+      height: 36px;
+    }
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--parchment);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0 0.9rem;
+      height: 100%;
+      cursor: pointer;
+      transition: color 0.2s;
+      border-right: 1px solid rgba(200,151,42,0.2);
+    }
+    .lang-btn:first-child { border-left: 1px solid rgba(200,151,42,0.2); }
+    .lang-btn.active { color: var(--gold); }
+    .lang-btn:hover { color: var(--gold-light); }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 36px; left: 0; right: 0;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 2.5rem;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(14, 26, 38, 0.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+    }
+    .nav-logo img {
+      height: 70px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--parchment);
+      text-decoration: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 100%;
+      height: 1px;
+      background: var(--gold);
+      transition: right 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { right: 0; }
+
+    .nav-book {
+      background: var(--gold);
+      color: var(--navy-deep) !important;
+      padding: 0.45rem 1.2rem;
+      border-radius: 2px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      transition: background 0.2s !important;
+    }
+    .nav-book:hover { background: var(--gold-light) !important; color: var(--navy-deep) !important; }
+    .nav-book::after { display: none !important; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 26px; height: 2px;
+      background: var(--parchment);
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(14,26,38,0.3) 0%,
+        rgba(14,26,38,0.15) 40%,
+        rgba(14,26,38,0.7) 100%
+      );
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 1.5rem;
+    }
+    .hero-eyebrow {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem;
+      color: var(--gold-light);
+      margin-bottom: 0.6rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.3s forwards;
+    }
+    .hero-logo {
+      width: clamp(104px, 13.8vw, 161px);
+      margin: 0 auto 1.2rem;
+      display: block;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5));
+      opacity: 0;
+      animation: fadeUp 0.9s 0.05s forwards, floatLogo 5s 1.2s ease-in-out infinite;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 700;
+      line-height: 1.0;
+      color: var(--white);
+      -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+      text-stroke: 1px rgba(255,255,255,0.25);
+      text-shadow: 0 4px 32px rgba(0,0,0,0.6), 0 0 9px rgba(232,191,106,0.85), 0 0 9px rgba(232,191,106,0.6);
+      opacity: 0;
+      animation: fadeUp 0.9s 0.55s forwards;
+    }
+    .hero-title span { color: var(--gold); }
+    .hero-sub {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: clamp(0.95rem, 2vw, 1.2rem);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--parchment2);
+      margin-top: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.8s forwards;
+    }
+    .hero-divider {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin: 1.6rem auto;
+      opacity: 0;
+      animation: fadeUp 0.9s 1s forwards;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s 1.2s forwards;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy-deep);
+      text-decoration: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.2s;
+      border: 2px solid var(--gold);
+    }
+    .btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--parchment);
+      text-decoration: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      border: 2px solid rgba(245,237,216,0.5);
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeUp 1s 1.8s forwards;
+    }
+    .scroll-indicator span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,237,216,0.5);
+    }
+    .scroll-dot {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s infinite;
+    }
+
+    /* ── SECTION BASE ── */
+    section { position: relative; }
+
+    .wc-divider {
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+    }
+    .wc-divider svg { display: block; width: 100%; }
+
+    /* ── ABOUT ── */
+    #about {
+      background: var(--parchment);
+      color: var(--navy);
+      padding: 6rem 2rem 7rem;
+    }
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-clip {
+      overflow: hidden;
+      border-radius: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .about-img-wrap img {
+      width: 100%;
+      border-radius: 4px;
+      box-shadow: 8px 8px 40px rgba(27,42,58,0.18);
+      transform: scale(1.4278);
+      display: block;
+    }
+    .about-img-frame {
+      position: absolute;
+      inset: -19.36px -19.36px 19.36px 19.36px;
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .about-text .eyebrow {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      color: var(--brick);
+      margin-bottom: 0.5rem;
+    }
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 1.4rem;
+    }
+    .about-text p {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: #3a4a5a;
+      margin-bottom: 1.2rem;
+    }
+    .about-badges {
+      display: flex;
+      gap: 1.4rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      text-align: center;
+    }
+    .badge-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .badge-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5a6a7a;
+      margin-top: 0.2rem;
+    }
+
+    /* ── FACILITIES ── */
+    #facilities {
+      background: var(--navy);
+      padding: 6rem 2rem;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-header .eyebrow {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem;
+      color: var(--gold-light);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--parchment);
+    }
+    .section-header .divider {
+      width: 50px; height: 1px;
+      background: var(--gold);
+      margin: 1rem auto 0;
+    }
+
+    .facilities-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.6rem;
+    }
+    .facility-card {
+      background: rgba(245,237,216,0.04);
+      border: 1px solid rgba(200,151,42,0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      box-shadow: 0 16px 48px rgba(0,0,0,0), 0 0 0 2px rgba(232,191,106,0);
+    }
+    .facilities-grid .facility-card {
+      transition: transform 0.3s ease, border-color 0.3s ease, opacity 0.7s ease, box-shadow 1s ease;
+    }
+    .facilities-grid .facility-card:hover,
+    .facilities-grid .facility-card.glow-active {
+      transform: translateY(-6px);
+      border-color: rgba(200,151,42,0.5);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 2px rgba(232,191,106,0.75);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.0975s ease;
+    }
+    .facility-img {
+      width: 100%; height: 220px;
+      object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg, #2a3a4a 0%, #1a2a3a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .facility-body {
+      padding: 1.54rem 1.76rem 1.98rem;
+    }
+    .facility-tag {
+      font-size: 0.715rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.55rem;
+    }
+    .facility-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.43rem;
+      color: var(--parchment);
+      margin-bottom: 0.66rem;
+    }
+    .facility-body p {
+      font-size: 0.968rem;
+      line-height: 1.7;
+      color: rgba(245,237,216,0.6);
+    }
+    .facility-arrow {
+      display: inline-block;
+      margin-top: 1.1rem;
+      font-size: 0.825rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .facility-arrow::after { content: ' →'; }
+
+    /* ── GALLERY ── */
+    #gallery {
+      background: var(--navy-deep);
+      padding: 6rem 2rem;
+    }
+    .gallery-grid {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      aspect-ratio: 4 / 3;
+      gap: 0.6rem;
+    }
+    .gallery-cell {
+      background: rgba(245,237,216,0.05);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: rgba(200,151,42,0.3);
+      position: relative;
+      transition: transform 0.3s;
+    }
+    .gallery-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-cell.big-1 { grid-column: 1 / 3; grid-row: 1 / 3; }
+    .gallery-cell.small-1 { grid-column: 3 / 4; grid-row: 1 / 2; }
+    .gallery-cell.small-2 { grid-column: 4 / 5; grid-row: 1 / 2; }
+    .gallery-cell.small-3 { grid-column: 1 / 2; grid-row: 3 / 4; }
+    .gallery-cell.small-4 { grid-column: 2 / 3; grid-row: 3 / 4; }
+    .gallery-cell.big-2 { grid-column: 3 / 5; grid-row: 2 / 4; }
+    .gallery-cell:hover { transform: scale(1.02); z-index: 2; }
+    .gallery-placeholder {
+      width: 100%; height: 100%;
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.4rem;
+      background: linear-gradient(135deg, rgba(200,151,42,0.06) 0%, rgba(139,58,42,0.08) 100%);
+      color: rgba(245,237,216,0.25);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .gallery-placeholder .icon { font-size: 2rem; }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--parchment);
+      color: var(--navy);
+      padding: 6rem 2rem;
+    }
+    .contact-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .contact-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .contact-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+      align-items: flex-start;
+    }
+    .contact-icon {
+      width: 38px; height: 38px;
+      background: var(--navy);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .contact-item-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #3a4a5a;
+    }
+    .contact-item-text strong {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brick);
+      margin-bottom: 0.2rem;
+    }
+    .contact-item-text a { color: #3a4a5a; text-decoration: none; }
+    .contact-item-text a:hover { color: var(--brick); }
+
+    .social-row {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(27,42,58,0.2);
+      border-radius: 2px;
+      text-decoration: none;
+      color: var(--navy);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .social-btn:hover { background: var(--navy); color: var(--parchment); border-color: var(--navy); }
+
+    .contact-actions h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .contact-btn-block {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .cta-whatsapp {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 1.5rem;
+      background: #25D366;
+      color: white;
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+    .cta-whatsapp:hover { opacity: 0.9; }
+    .cta-email {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 1.5rem;
+      background: var(--navy);
+      color: var(--parchment);
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .cta-email:hover { background: #2a3d52; }
+    .cta-book {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 1.5rem;
+      background: var(--gold);
+      color: var(--navy-deep);
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .cta-book:hover { background: var(--gold-light); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy-deep);
+      border-top: 1px solid rgba(200,151,42,0.15);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+    footer img { height: 60px; margin-bottom: 1rem; }
+    footer p {
+      font-size: 0.78rem;
+      color: rgba(245,237,216,0.35);
+      letter-spacing: 0.1em;
+      line-height: 1.8;
+    }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MOBILE NAV ── */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 36px; left: 0; right: 0; bottom: 0;
+      background: rgba(14,26,38,0.98);
+      z-index: 998;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      color: var(--parchment);
+      text-decoration: none;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      transition: color 0.2s;
+    }
+    .mobile-nav a:hover { color: var(--gold); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0.7rem 1.2rem; }
+      .nav-logo img { height: 52px; }
+      .lang-strip { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .about-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .about-img-frame { display: none; }
+
+      .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; aspect-ratio: auto; }
+      .gallery-cell.big-1, .gallery-cell.big-2, .gallery-cell.small-1, .gallery-cell.small-2, .gallery-cell.small-3, .gallery-cell.small-4 {
+        grid-column: auto; grid-row: auto;
+      }
+      .gallery-cell.big-1, .gallery-cell.big-2 { grid-column: span 2; aspect-ratio: 16/9; }
+      .gallery-cell.small-1, .gallery-cell.small-2, .gallery-cell.small-3, .gallery-cell.small-4 { aspect-ratio: 1; }
+
+      .facilities-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LANGUAGE STRIP -->
+<div class="lang-strip">
+  <button class="lang-btn active" onclick="setLang('id')">ID</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('zh')">中文</button>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#about" onclick="closeMobile()" data-i18n="nav_about">Tentang</a>
+  <a href="#facilities" onclick="closeMobile()" data-i18n="nav_facilities">Fasilitas</a>
+  <a href="menu.html" data-i18n="nav_menu">Menu</a>
+
+  <a href="#contact" onclick="closeMobile()" data-i18n="nav_contact">Kontak</a>
+  <a href="facilities.html#booking" onclick="closeMobile()" class="btn-primary" data-i18n="nav_book">Pesan VIP</a>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/LocateCafeNew.png" alt="Locate Cafe" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about" data-i18n="nav_about">Tentang</a></li>
+    <li><a href="#facilities" data-i18n="nav_facilities">Fasilitas</a></li>
+    <li><a href="menu.html" data-i18n="nav_menu">Menu</a></li>
+
+    <li><a href="#contact" data-i18n="nav_contact">Kontak</a></li>
+    <li><a href="facilities.html#booking" class="nav-book" data-i18n="nav_book">Pesan VIP</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="HomepageVid.mp4" type="video/mp4" />
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <img src="assets/LocateCafeNew.png" alt="Locate Cafe" class="hero-logo" />
+    <p class="hero-eyebrow" data-i18n="hero_eyebrow">Selamat Datang di</p>
+    <h1 class="hero-title">LOCATE<br /><span>Cafe</span></h1>
+    <p class="hero-sub" data-i18n="hero_sub">Medan · Sumatera Utara</p>
+    <div class="hero-divider"></div>
+    <div class="hero-cta">
+      <a href="menu.html" class="btn-primary" data-i18n="hero_cta1">Lihat Menu</a>
+      <a href="facilities.html#booking" class="btn-outline" data-i18n="hero_cta2">Reservasi VIP</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-dot"></div>
+    <span data-i18n="scroll_hint">Gulir ke bawah</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-img-wrap reveal">
+      <div class="about-img-frame"></div>
+      <div class="about-img-clip"><img src="assets/OurstoryImage.jpg" alt="Interior Locate Cafe" /></div>
+    </div>
+    <div class="about-text reveal" style="transition-delay:0.15s">
+      <p class="eyebrow" data-i18n="about_eyebrow">Cerita Kami</p>
+      <h2 data-i18n="about_title">Temukan Tempat<br />Acara Sempurna Anda</h2>
+      <p data-i18n="about_p1">Locate Cafe hadir di jantung kota Medan, menawarkan pengalaman bersantap dan bersenang-senang yang hangat serta berkesan. Mulai dari dinding bata ekspos hingga pendar keemasan lampu Edison yang terhubung melalui pipa tembaga antik — setiap sudut dirancang dengan teliti untuk menghadirkan rasa tenang dan nyaman. Tempat ini merupakan perpaduan sejati antara nuansa industrial dan kehangatan rumah, sangat ideal untuk berbagai jenis acara dan pertemuan.</p>
+      <p data-i18n="about_p2">Kami menyajikan hidangan autentik maupun fusion kuliner Nusantara, aneka minuman segar, ruang VIP eksklusif, sudut santai dengan beanbag, hingga Panggung Karaoke mini yang dapat digunakan dan dinikmati bersama teman, rekan kerja, maupun keluarga tercinta.</p>
+      <div class="about-badges">
+        <div class="badge">
+          <div class="badge-num">4</div>
+          <div class="badge-label" data-i18n="badge_spaces">Ruang Unik</div>
+        </div>
+        <div class="badge">
+          <div class="badge-num">35+</div>
+          <div class="badge-label" data-i18n="badge_menu">Menu Pilihan</div>
+        </div>
+        <div class="badge">
+          <div class="badge-num">25+</div>
+          <div class="badge-label" data-i18n="badge_vip">VIP Kapasitas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACILITIES -->
+<section id="facilities">
+  <div class="section-header reveal">
+    <span class="eyebrow" data-i18n="fac_eyebrow">Ruang & Fasilitas</span>
+    <h2 data-i18n="fac_title">Pilih Suasanamu</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="facilities-grid">
+    <a href="facilities.html#vip" class="facility-card reveal">
+      <img src="assets/VIPRoom.jpg" class="facility-img" alt="VIP Room" />
+      <div class="facility-body">
+        <p class="facility-tag" data-i18n="fac_tag_vip">Ruang Eksklusif</p>
+        <h3 data-i18n="fac_vip_title">VIP Room</h3>
+        <p data-i18n="fac_vip_desc">Ruang privat yang cozy dengan kapasitas sampai 25 orang, lengkap dengan fasilitas AC, Projector, wastafel pribadi, dan sepasang Stereo Speakers plus wireless Mics. Perfect choice buat rapat, celebration, atau sekadar kumpul bareng keluarga dan sahabat.</p>
+        <span class="facility-arrow" data-i18n="fac_learn">Selengkapnya</span>
+      </div>
+    </a>
+    <a href="facilities.html#outdoor" class="facility-card reveal">
+      <img src="assets/OutdoorSeating.jpg" class="facility-img" alt="Outdoor Seating" />
+      <div class="facility-body">
+        <p class="facility-tag" data-i18n="fac_tag_outdoor">Area Terbuka</p>
+        <h3 data-i18n="fac_outdoor_title">Outdoor Seating</h3>
+        <p data-i18n="fac_outdoor_desc">Nikmati area yang luas dengan jendela besar yang dapet natural lighting langsung dari luar. Dipadukan dengan semi-industrial vibes dan tata lampu yang unik, bikin suasana makin terasa aesthetic.</p>
+        <span class="facility-arrow" data-i18n="fac_learn">Selengkapnya</span>
+      </div>
+    </a>
+    <a href="facilities.html#grass" class="facility-card reveal">
+      <img src="assets/ChillCorner.jpg" class="facility-img" alt="Chill Grass Corner" style="object-position: center 68%;" />
+      <div class="facility-body">
+        <p class="facility-tag" data-i18n="fac_tag_grass">Santai & Chill</p>
+        <h3 data-i18n="fac_grass_title">Chill Grass Corner</h3>
+        <p data-i18n="fac_grass_desc">Sudut rumput sintetis yang cozy banget buat chilling dan foto-foto aesthetic bareng geng kamu. Lengkap dengan beanbag yang empuk dan mini table, jadi kamu bisa sambil dine-in dan main games seru di sini loh!</p>
+        <span class="facility-arrow" data-i18n="fac_learn">Selengkapnya</span>
+      </div>
+    </a>
+    <a href="facilities.html#karaoke" class="facility-card reveal">
+      <img src="assets/KaraokeStage.jpg" class="facility-img" alt="Mini Karaoke Stage" style="object-position: center 68%;" />
+      <div class="facility-body">
+        <p class="facility-tag" data-i18n="fac_tag_karaoke">Hiburan</p>
+        <h3 data-i18n="fac_karaoke_title">Mini Karaoke Stage</h3>
+        <p data-i18n="fac_karaoke_desc">Panggung karaoke mini yang simpel tapi fasilitasnya lengkap banget buat bikin event kamu makin hidup! Sistem audionya sudah kompatibel dengan Bluetooth dan kabel Audio jack, lengkap dengan 2 mics, stereo speakers yang mantap, plus tripod buat taruh HP atau tablet biar kamu bisa dengan mudah baca lirik sambil nyanyiin lagu favorit bareng crowd kamu.</p>
+        <span class="facility-arrow" data-i18n="fac_learn">Selengkapnya</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-header reveal">
+    <span class="eyebrow" data-i18n="gal_eyebrow">Momen Terbaik</span>
+    <h2 data-i18n="gal_title">Galeri</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-cell big-1"><img src="assets/bigPic1.png" class="gallery-img" alt="Locate Cafe" /></div>
+    <div class="gallery-cell small-1"><img src="assets/smallPic1.jpg" class="gallery-img" alt="Locate Cafe" /></div>
+    <div class="gallery-cell small-2"><img src="assets/smallPic2.png" class="gallery-img" alt="Locate Cafe" /></div>
+    <div class="gallery-cell small-3"><img src="assets/smallPic3.png" class="gallery-img" alt="Locate Cafe" /></div>
+    <div class="gallery-cell small-4"><img src="assets/smallPic4.png" class="gallery-img" alt="Locate Cafe" /></div>
+    <div class="gallery-cell big-2"><img src="assets/bigPic2.jpg" class="gallery-img" alt="Locate Cafe" /></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="contact-info reveal">
+      <h3 data-i18n="contact_title">Temukan Kami</h3>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div class="contact-item-text">
+          <strong data-i18n="contact_address_label">Alamat</strong>
+          Jl. Karya No.257, Karang Berombak,<br />Kec. Medan Bar., Kota Medan,<br />Sumatera Utara 20115
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🕐</div>
+        <div class="contact-item-text">
+          <strong data-i18n="contact_hours_label">Jam Buka</strong>
+          <span data-i18n="contact_hours">Setiap Hari (kecuali Senin)<br />12.00 – 22.00 WIB</span>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📱</div>
+        <div class="contact-item-text">
+          <strong>WhatsApp</strong>
+          <a href="https://wa.me/6281269509936">+62 812-6950-9936</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div class="contact-item-text">
+          <strong>Email</strong>
+          <a href="mailto:locatecafemedan@gmail.com">locatecafemedan@gmail.com</a>
+        </div>
+      </div>
+      <div class="social-row">
+        <a href="https://www.instagram.com/locatekarya/" target="_blank" class="social-btn">📸 Instagram</a>
+        <a href="https://www.tiktok.com/@locate.cafe.medan" target="_blank" class="social-btn">🎵 TikTok</a>
+        <a href="https://www.facebook.com/profile.php?id=61566309878934" target="_blank" class="social-btn">👍 Facebook</a>
+      </div>
+    </div>
+    <div class="contact-actions reveal" style="transition-delay:0.15s">
+      <h3 data-i18n="contact_cta_title">Hubungi Kami</h3>
+      <div class="contact-btn-block">
+        <a href="https://wa.me/6281269509936?text=Halo%20Locate%20Cafe%2C%20saya%20ingin%20bertanya..." class="cta-whatsapp" target="_blank">
+          <span style="font-size:1.2rem">💬</span>
+          <span data-i18n="cta_wa">Chat via WhatsApp</span>
+        </a>
+        <a href="mailto:locatecafemedan@gmail.com" class="cta-email">
+          <span style="font-size:1.2rem">✉</span>
+          <span data-i18n="cta_email">Kirim Email</span>
+        </a>
+        <a href="facilities.html#booking" class="cta-book">
+          <span style="font-size:1.2rem">🎖</span>
+          <span data-i18n="cta_book">Reservasi VIP Room</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="assets/LocateCafeNew.png" alt="Locate Cafe" />
+  <p>
+    Jl. Karya No.257, Karang Berombak, Medan · 
+    <a href="mailto:locatecafemedan@gmail.com">locatecafemedan@gmail.com</a><br />
+    © 2025 Locate Cafe. <span data-i18n="footer_rights">Seluruh hak dilindungi.</span>
+  </p>
+</footer>
+
+<script>
+  // ── NAVBAR SCROLL ──
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // ── MOBILE MENU ──
+  function toggleMobile() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+  function closeMobile() {
+    document.getElementById('mobileNav').classList.remove('open');
+  }
+
+  // ── MENU TABS ──
+  function switchTab(btn, id) {
+    document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  // ── SCROLL REVEAL ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ── FACILITY CARD GLOW (touch press-and-hold) ──
+  document.querySelectorAll('.facility-card').forEach(card => {
+    card.addEventListener('touchstart', () => {
+      card.classList.add('glow-active');
+    }, { passive: true });
+    card.addEventListener('touchend', () => {
+      card.classList.remove('glow-active');
+    });
+    card.addEventListener('touchcancel', () => {
+      card.classList.remove('glow-active');
+    });
+  });
+
+  // ── LANGUAGE SYSTEM ──
+  const translations = {
+    id: {
+      nav_about: 'Tentang', nav_facilities: 'Fasilitas', nav_menu: 'Menu',
+      nav_gallery: 'Galeri', nav_contact: 'Kontak', nav_book: 'Pesan VIP',
+      hero_eyebrow: 'Selamat Datang di', hero_sub: 'Medan · Sumatera Utara',
+      hero_cta1: 'Lihat Menu', hero_cta2: 'Reservasi VIP',
+      scroll_hint: 'Gulir ke bawah',
+      about_eyebrow: 'Cerita Kami', about_title: 'Temukan Tempat Acara Sempurna Anda',
+      about_p1: 'Locate Cafe hadir di jantung kota Medan, menawarkan pengalaman bersantap dan bersenang-senang yang hangat serta berkesan. Mulai dari dinding bata ekspos hingga pendar keemasan lampu Edison yang terhubung melalui pipa tembaga antik — setiap sudut dirancang dengan teliti untuk menghadirkan rasa tenang dan nyaman. Tempat ini merupakan perpaduan sejati antara nuansa industrial dan kehangatan rumah, sangat ideal untuk berbagai jenis acara dan pertemuan.',
+      about_p2: 'Kami menyajikan hidangan autentik maupun fusion kuliner Nusantara, aneka minuman segar, ruang VIP eksklusif, sudut santai dengan beanbag, hingga Panggung Karaoke mini yang dapat digunakan dan dinikmati bersama teman, rekan kerja, maupun keluarga tercinta.',
+      badge_spaces: 'Ruang Unik', badge_menu: 'Menu Pilihan', badge_vip: 'VIP Kapasitas',
+      fac_eyebrow: 'Ruang & Fasilitas', fac_title: 'Pilih Suasanamu',
+      fac_tag_vip: 'Ruang Eksklusif', fac_vip_title: 'VIP Room',
+      fac_vip_desc: 'Ruang privat yang cozy dengan kapasitas sampai 25 orang, lengkap dengan fasilitas AC, Projector, wastafel pribadi, dan sepasang Stereo Speakers plus wireless Mics. Perfect choice buat rapat, celebration, atau sekadar kumpul bareng keluarga dan sahabat.',
+      fac_tag_outdoor: 'Area Terbuka', fac_outdoor_title: 'Outdoor Seating',
+      fac_outdoor_desc: 'Nikmati area yang luas dengan jendela besar yang dapet natural lighting langsung dari luar. Dipadukan dengan semi-industrial vibes dan tata lampu yang unik, bikin suasana makin terasa aesthetic.',
+      fac_tag_grass: 'Santai & Chill', fac_grass_title: 'Chill Grass Corner',
+      fac_grass_desc: 'Sudut rumput sintetis yang cozy banget buat chilling dan foto-foto aesthetic bareng geng kamu. Lengkap dengan beanbag yang empuk dan mini table, jadi kamu bisa sambil dine-in dan main games seru di sini loh!',
+      fac_tag_karaoke: 'Hiburan', fac_karaoke_title: 'Mini Karaoke Stage',
+      fac_karaoke_desc: 'Panggung karaoke mini yang simpel tapi fasilitasnya lengkap banget buat bikin event kamu makin hidup! Sistem audionya sudah kompatibel dengan Bluetooth dan kabel Audio jack, lengkap dengan 2 mics, stereo speakers yang mantap, plus tripod buat taruh HP atau tablet biar kamu bisa dengan mudah baca lirik sambil nyanyiin lagu favorit bareng crowd kamu.',
+      fac_learn: 'Selengkapnya',
+      menu_eyebrow: 'Sajian Kami', menu_title: 'Jelajahi Menu', menu_cta: 'Lihat Menu Lengkap',
+      tab_food: 'Makanan', tab_drinks: 'Minuman', tab_vip: 'Menu VIP',
+      tab_pkg6: 'Paket 6 Pax', tab_pkg12: 'Paket 12 Pax',
+      gal_eyebrow: 'Momen Terbaik', gal_title: 'Galeri', gal_ph: 'Foto Segera Hadir',
+      contact_title: 'Temukan Kami', contact_address_label: 'Alamat',
+      contact_hours_label: 'Jam Buka', contact_hours: 'Setiap Hari (kecuali Senin) · 12.00 – 22.00 WIB',
+      contact_cta_title: 'Hubungi Kami',
+      cta_wa: 'Chat via WhatsApp', cta_email: 'Kirim Email', cta_book: 'Reservasi VIP Room',
+      footer_rights: 'Seluruh hak dilindungi.'
+    },
+    en: {
+      nav_about: 'About', nav_facilities: 'Facilities', nav_menu: 'Menu',
+      nav_gallery: 'Gallery', nav_contact: 'Contact', nav_book: 'Book VIP',
+      hero_eyebrow: 'Welcome to', hero_sub: 'Medan · North Sumatra',
+      hero_cta1: 'View Menu', hero_cta2: 'Book VIP Room',
+      scroll_hint: 'Scroll down',
+      about_eyebrow: 'Our Story', about_title: 'Find Your Perfect Event Place',
+      about_p1: 'Locate Cafe sits in the heart of Medan, offering a warm and memorable dining and fun experience. From exposed brick walls to golden Edison lights connected through antiquated copper tubes — every corner is crafted to make you feel cozy and comfortable. It is truly a fusion of industrial and home vibes, which makes it suitable for all kinds of events and gatherings.',
+      about_p2: 'We serve both authentic and fusion Indonesian cuisine, refreshing drinks, an exclusive VIP room, a chill corner with beanbags, and even a mini Karaoke Stage for our customers to use and enjoy with their friends, colleagues, or families.',
+      badge_spaces: 'Unique Spaces', badge_menu: 'Menu Items', badge_vip: 'VIP Capacity',
+      fac_eyebrow: 'Spaces & Facilities', fac_title: 'Choose Your Vibe',
+      fac_tag_vip: 'Exclusive Space', fac_vip_title: 'VIP Room',
+      fac_vip_desc: 'A private room for up to 25 guests, complete with AC, Projector, personal handbasin and a pair of Stereo Speakers with wireless Mics. Perfect for meetings, celebrations or family and friend gatherings.',
+      fac_tag_outdoor: 'Open Air', fac_outdoor_title: 'Outdoor Seating',
+      fac_outdoor_desc: 'Enjoy the wide space and big windows with natural lights from outside fitted with semi-industrial style vibes as well as unique light setups.',
+      fac_tag_grass: 'Relax & Chill', fac_grass_title: 'Chill Grass Corner',
+      fac_grass_desc: 'A cozy synthetic grass patch corner for chilling and taking aesthetic photos with friends, complete with comfy beanbags and mini table, so you can dine and play games in here too!',
+      fac_tag_karaoke: 'Entertainment', fac_karaoke_title: 'Mini Karaoke Stage',
+      fac_karaoke_desc: 'A simple yet fully equipped mini karaoke stage to liven up your events. Full Bluetooth and Audio jack compatible audio systems with 2 mics, big stereo speakers and a tripod for phone/tablet for you to easily read off the lyrics while singing your favorite tunes with your crowds.',
+      fac_learn: 'Learn More',
+      menu_eyebrow: 'Our Offerings', menu_title: 'Explore the Menu', menu_cta: 'See Full Menu',
+      tab_food: 'Food', tab_drinks: 'Drinks', tab_vip: 'VIP Menu',
+      tab_pkg6: '6 Pax Package', tab_pkg12: '12 Pax Package',
+      gal_eyebrow: 'Best Moments', gal_title: 'Gallery', gal_ph: 'Photos Coming Soon',
+      contact_title: 'Find Us', contact_address_label: 'Address',
+      contact_hours_label: 'Opening Hours', contact_hours: 'Daily (except Monday) · 12:00 – 22:00 WIB',
+      contact_cta_title: 'Get in Touch',
+      cta_wa: 'Chat on WhatsApp', cta_email: 'Send an Email', cta_book: 'Reserve the VIP Room',
+      footer_rights: 'All rights reserved.'
+    },
+    zh: {
+      nav_about: '关于我们', nav_facilities: '设施', nav_menu: '菜单',
+      nav_gallery: '图库', nav_contact: '联系我们', nav_book: '预订VIP',
+      hero_eyebrow: '欢迎来到', hero_sub: '棉兰 · 北苏门答腊',
+      hero_cta1: '查看菜单', hero_cta2: '预订VIP包厢',
+      scroll_hint: '向下滚动',
+      about_eyebrow: '我们的故事', about_title: '寻找您专属的完美活动空间',
+      about_p1: 'Locate Cafe 坐落于棉兰市中心，为您奉上温馨且令人难忘的餐饮与娱乐体验。从复古的裸露砖墙，到通过古朴铜管错落相连、散发着金色光芒的爱迪生灯泡——每一个角落都经过精心打造，旨在为您营造如家一般的舒适与惬意。这里将工业美学与温馨氛围完美融合，是举办各类活动与聚会的绝佳之选。',
+      about_p2: '我们不仅供应正宗与融合风味的印尼料理及各式清爽饮品，还配备了专属VIP包厢、设有懒人沙发的休闲角，甚至还有微型卡拉OK舞台，供您与朋友、同事或家人尽情欢聚，共享美好时光。',
+      badge_spaces: '特色空间', badge_menu: '精选菜品', badge_vip: 'VIP容量',
+      fac_eyebrow: '空间与设施', fac_title: '选择你的氛围',
+      fac_tag_vip: '专属空间', fac_vip_title: 'VIP包厢',
+      fac_vip_desc: '一个可以容纳多达25人的私密小空间，里面空调、投影机、专属洗手盆一应俱全，还配了一对带无线麦克风的立体声音响。不管是开会、庆祝生日，还是和家人朋友的小聚会，选这里准没错。',
+      fac_tag_outdoor: '户外区域', fac_outdoor_title: '户外座位区',
+      fac_outdoor_desc: '享受宽敞的空间和超大窗户带来的户外自然光，这里还自带半工业风的独特氛围，搭配上别具一格的灯光设计，随手一拍都很出片。',
+      fac_tag_grass: '休闲放松', fac_grass_title: '绿茵休闲角',
+      fac_grass_desc: '一个铺满人造草坪的温馨小角落，超级适合和朋友一起放松聊天、拍好看的氛围感照片。这里不仅有舒服的懒人沙发和迷你小桌子，你还可以坐在这儿一边吃吃喝喝，一边快乐地玩桌游呢！',
+      fac_tag_karaoke: '娱乐设施', fac_karaoke_title: '迷你卡拉OK舞台',
+      fac_karaoke_desc: '一个简简单单、设备却超级齐全的微型卡拉OK舞台，绝对能瞬间炒热你的活动气氛！音响系统不仅支持蓝牙和音频线连接，还配齐了2个麦克风、超给力的立体声大音箱，甚至连放手机或平板的三角支架都帮你准备好了。让你一边轻松看歌词，一边和全场朋友一起嗨唱最喜欢的歌曲！',
+      fac_learn: '了解更多',
+      menu_eyebrow: '我们的美食', menu_title: '探索菜单', menu_cta: '查看完整菜单',
+      tab_food: '餐食', tab_drinks: '饮品', tab_vip: 'VIP菜单',
+      tab_pkg6: '6人套餐', tab_pkg12: '12人套餐',
+      gal_eyebrow: '精彩瞬间', gal_title: '图库', gal_ph: '图片即将上线',
+      contact_title: '找到我们', contact_address_label: '地址',
+      contact_hours_label: '营业时间', contact_hours: '每天（周一除外）· 12:00 – 22:00 WIB',
+      contact_cta_title: '联系我们',
+      cta_wa: 'WhatsApp 咨询', cta_email: '发送邮件', cta_book: '预订VIP包厢',
+      footer_rights: '版权所有。'
+    }
+  };
+
+  let currentLang = 'id';
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) {
+        el.innerHTML = t[key];
+      }
+    });
+    document.documentElement.lang = lang === 'zh' ? 'zh' : lang;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu — Locate Cafe</title>
+  <link rel="icon" href="assets/LocateCafeNew.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #1B2A3A; --navy-deep: #0E1A26;
+      --gold: #C8972A; --gold-light: #E8BF6A;
+      --brick: #8B3A2A; --parchment: #F5EDD8;
+      --parchment2: #EDE0C4; --green: #2E4A3A;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', sans-serif; background: var(--navy-deep); color: var(--parchment); overflow-x: hidden; }
+
+    .lang-strip {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; justify-content: flex-end; align-items: center;
+      padding: 0 2rem; background: rgba(14,26,38,0.95); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,151,42,0.2); height: 36px;
+    }
+    .lang-btn {
+      background: none; border: none; color: var(--parchment); font-family: 'Lato', sans-serif;
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0 0.9rem; height: 100%; cursor: pointer; transition: color 0.2s;
+      border-right: 1px solid rgba(200,151,42,0.2);
+    }
+    .lang-btn:first-child { border-left: 1px solid rgba(200,151,42,0.2); }
+    .lang-btn.active { color: var(--gold); }
+
+    nav {
+      position: fixed; top: 36px; left: 0; right: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.8rem 2.5rem; background: rgba(14,26,38,0.96);
+      backdrop-filter: blur(12px); box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+    }
+    .nav-logo img { height: 52px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      color: var(--parchment); text-decoration: none; font-size: 0.82rem;
+      letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.2s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 100%;
+      height: 1px; background: var(--gold); transition: right 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { right: 0; }
+    .nav-book { background: var(--gold); color: var(--navy-deep) !important; padding: 0.45rem 1.2rem; border-radius: 2px; font-weight: 700; }
+    .nav-book::after { display: none !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 26px; height: 2px; background: var(--parchment); }
+    .mobile-nav {
+      display: none; position: fixed; top: 36px; left: 0; right: 0; bottom: 0;
+      background: rgba(14,26,38,0.98); z-index: 998;
+      flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a { color: var(--parchment); text-decoration: none; font-family: 'Playfair Display', serif; font-size: 1.8rem; }
+    .mobile-nav a:hover { color: var(--gold); }
+
+    /* PAGE HERO */
+    .page-hero {
+      padding-top: calc(36px + 74px + 3rem);
+      padding-bottom: 4rem;
+      background: linear-gradient(to bottom, var(--navy-deep), var(--navy));
+      text-align: center;
+    }
+    .page-hero .eyebrow { font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: var(--gold-light); display: block; margin-bottom: 0.4rem; }
+    .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700; }
+    .page-hero .divider { width: 50px; height: 1px; background: var(--gold); margin: 1.2rem auto; }
+    .page-hero p { font-size: 0.9rem; color: rgba(245,237,216,0.55); letter-spacing: 0.12em; text-transform: uppercase; }
+
+    /* MENU LAYOUT */
+    main { background: var(--parchment); padding: 0; }
+
+    .menu-nav {
+      position: sticky; top: calc(36px + 74px); z-index: 100;
+      background: var(--navy); border-bottom: 2px solid rgba(200,151,42,0.3);
+      display: flex; justify-content: flex-start; overflow-x: auto; gap: 0;
+    }
+    @media (min-width: 769px) {
+      .menu-nav { justify-content: center; }
+    }
+    .menu-nav-btn {
+      background: none; border: none; padding: 1.1rem 1.8rem;
+      color: rgba(245,237,216,0.5); font-family: 'Lato', sans-serif;
+      font-size: 1.28rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s; margin-bottom: -2px;
+    }
+    .menu-nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .menu-nav-btn:hover { color: var(--parchment); }
+
+    .menu-section { display: none; }
+    .menu-section.active { display: block; }
+
+    .vip-subtabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .vip-subtab-btn {
+      background: rgba(27,42,58,0.06);
+      border: 1px solid rgba(27,42,58,0.15);
+      color: var(--navy);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .vip-subtab-btn.active {
+      background: var(--brick);
+      color: white;
+      border-color: var(--brick);
+    }
+    .vip-subtab-btn:hover:not(.active) {
+      border-color: var(--brick);
+      color: var(--brick);
+    }
+    .vip-subpanel { display: none; }
+    .vip-subpanel.active { display: block; }
+
+    .menu-page-wrap {
+      max-width: 900px; margin: 0 auto; padding: 3rem 2rem;
+    }
+    .menu-img-display {
+      width: 100%; border-radius: 6px;
+      box-shadow: 0 16px 56px rgba(27,42,58,0.25);
+      display: block;
+    }
+    .menu-img-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .menu-arrow-btn {
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(27,42,58,0.2);
+      background: var(--parchment2);
+      color: var(--navy);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(27,42,58,0.12);
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+    }
+    .menu-arrow-btn:hover {
+      background: var(--brick);
+      color: white;
+      transform: scale(1.08);
+    }
+    .menu-img-col { flex: 1; min-width: 0; }
+    @media (max-width: 600px) {
+      .menu-arrow-btn { width: 42px; height: 42px; font-size: 1.1rem; }
+      .menu-img-row { gap: 0.5rem; }
+    }
+
+    /* Caption */
+    .menu-caption {
+      text-align: center; margin-top: 1.2rem;
+      font-size: 0.78rem; color: #7a8a9a; letter-spacing: 0.1em;
+    }
+
+    /* VIP SPECIAL PAGE */
+    .vip-section-header {
+      text-align: center; padding: 3rem 2rem 2rem;
+    }
+    .vip-section-header .eyebrow { font-family: 'Dancing Script', cursive; font-size: 1.3rem; color: var(--brick); }
+    .vip-section-header h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--navy); margin-top: 0.3rem; }
+    .vip-section-header .divider { width: 40px; height: 1px; background: var(--brick); margin: 1rem auto; }
+    .vip-grid {
+      max-width: 1100px; margin: 0 auto; padding: 0 2rem 3rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    }
+    .vip-grid img { width: 100%; border-radius: 6px; box-shadow: 0 8px 32px rgba(27,42,58,0.2); }
+
+    .book-cta-banner {
+      background: var(--navy); padding: 3rem 2rem; text-align: center;
+    }
+    .book-cta-banner .eyebrow { font-family: 'Dancing Script', cursive; font-size: 1.2rem; color: var(--gold-light); }
+    .book-cta-banner h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--parchment); margin: 0.4rem 0 1.2rem; }
+    .btn-primary {
+      display: inline-block; background: var(--gold); color: var(--navy-deep);
+      text-decoration: none; font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; padding: 0.9rem 2.2rem;
+      border-radius: 2px; border: 2px solid var(--gold); transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+
+    footer {
+      background: var(--navy-deep); border-top: 1px solid rgba(200,151,42,0.15);
+      padding: 3rem 2rem 2rem; text-align: center;
+    }
+    footer img { height: 60px; margin-bottom: 1rem; }
+    footer p { font-size: 0.78rem; color: rgba(245,237,216,0.35); letter-spacing: 0.1em; line-height: 1.8; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0.7rem 1.2rem; }
+      .lang-strip { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .vip-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="lang-strip">
+  <button class="lang-btn active" onclick="setLang('id')">ID</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('zh')">中文</button>
+</div>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html#about" onclick="closeMobile()">Tentang</a>
+  <a href="facilities.html" onclick="closeMobile()">Fasilitas</a>
+  <a href="menu.html">Menu</a>
+
+  <a href="index.html#contact" onclick="closeMobile()">Kontak</a>
+  <a href="facilities.html#booking" onclick="closeMobile()" class="btn-primary" style="padding:0.5rem 1.2rem;font-size:0.8rem">Pesan VIP</a>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><img src="assets/LocateCafeNew.png" alt="Locate Cafe" /></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">Tentang</a></li>
+    <li><a href="facilities.html">Fasilitas</a></li>
+    <li><a href="menu.html">Menu</a></li>
+
+    <li><a href="index.html#contact">Kontak</a></li>
+    <li><a href="facilities.html#booking" class="nav-book">Pesan VIP</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-hero">
+  <span class="eyebrow" data-i18n="ph_eyebrow">Sajian Kami</span>
+  <h1 data-i18n="ph_title">Menu Locate Cafe</h1>
+  <div class="divider"></div>
+  <p data-i18n="ph_sub">Harga belum termasuk PPN cafe</p>
+</div>
+
+<main>
+  <div class="menu-nav">
+    <button class="menu-nav-btn active" onclick="switchSection(this,'makanan')" data-i18n="tab_food">Makanan</button>
+    <button class="menu-nav-btn" onclick="switchSection(this,'minuman')" data-i18n="tab_drinks">Minuman</button>
+    <button class="menu-nav-btn" onclick="switchSection(this,'vip')" data-i18n="tab_vip">Paket VIP</button>
+    <button class="menu-nav-btn" onclick="switchSection(this,'packages')" data-i18n="tab_pkg">Paket Prasmanan</button>
+  </div>
+
+  <!-- MAKANAN -->
+  <div class="menu-section active" id="sec-makanan">
+    <div class="menu-page-wrap" style="max-width: 1397px;">
+      <div class="menu-img-row">
+        <button class="menu-arrow-btn" onclick="navigateMenu(-1)" aria-label="Previous menu">&#8592;</button>
+        <div class="menu-img-col"><img src="assets/2026MenuMakanan.jpg" alt="Menu Makanan" class="menu-img-display" /></div>
+        <button class="menu-arrow-btn" onclick="navigateMenu(1)" aria-label="Next menu">&#8594;</button>
+      </div>
+      <p class="menu-caption" data-i18n="cap_food">Menu Makanan 2026 · Harga dalam ribuan Rupiah</p>
+    </div>
+  </div>
+
+  <!-- MINUMAN -->
+  <div class="menu-section" id="sec-minuman">
+    <div class="menu-page-wrap" style="max-width: 1397px;">
+      <div class="menu-img-row">
+        <button class="menu-arrow-btn" onclick="navigateMenu(-1)" aria-label="Previous menu">&#8592;</button>
+        <div class="menu-img-col"><img src="assets/2026MenuMinuman.jpg" alt="Menu Minuman" class="menu-img-display" /></div>
+        <button class="menu-arrow-btn" onclick="navigateMenu(1)" aria-label="Next menu">&#8594;</button>
+      </div>
+      <p class="menu-caption" data-i18n="cap_drinks">Menu Minuman 2026 · Harga dalam ribuan Rupiah</p>
+    </div>
+  </div>
+
+  <!-- VIP MENU -->
+  <div class="menu-section" id="sec-vip">
+    <div class="vip-section-header">
+      <p class="eyebrow" data-i18n="vip_eyebrow">Eksklusif</p>
+      <h2 data-i18n="vip_title">Locate VIP Menu</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="menu-page-wrap" style="padding-top:0">
+      <div class="menu-img-row">
+        <button class="menu-arrow-btn" onclick="navigateMenu(-1)" aria-label="Previous menu">&#8592;</button>
+        <div class="menu-img-col">
+          <div class="vip-subtabs">
+            <button class="vip-subtab-btn active" onclick="switchVipSubtab(this,'whole')" data-i18n="vip_sub_whole">Paket Lengkap</button>
+            <button class="vip-subtab-btn" onclick="switchVipSubtab(this,'komplit')" data-i18n="vip_sub_komplit">Paket Komplit</button>
+            <button class="vip-subtab-btn" onclick="switchVipSubtab(this,'standard')" data-i18n="vip_sub_standard">Menu VIP</button>
+            <button class="vip-subtab-btn" onclick="switchVipSubtab(this,'outdoor')" data-i18n="vip_sub_outdoor">Paket Outdoor</button>
+          </div>
+          <div class="vip-subpanel active" id="vipsub-whole">
+            <img src="assets/PaketVIPWhole.jpg" alt="Paket VIP Whole" class="menu-img-display" />
+          </div>
+          <div class="vip-subpanel" id="vipsub-komplit">
+            <img src="assets/PaketVIPKomplit.jpg" alt="Paket VIP Komplit" class="menu-img-display" />
+          </div>
+          <div class="vip-subpanel" id="vipsub-standard">
+            <img src="assets/PaketVIP.jpg" alt="Menu VIP" class="menu-img-display" />
+          </div>
+          <div class="vip-subpanel" id="vipsub-outdoor">
+            <img src="assets/PaketVIPOutdoor.jpg" alt="Paket VIP Outdoor" class="menu-img-display" />
+          </div>
+        </div>
+        <button class="menu-arrow-btn" onclick="navigateMenu(1)" aria-label="Next menu">&#8594;</button>
+      </div>
+      <p class="menu-caption" data-i18n="cap_vip">Menu VIP Prasmanan · Harga dalam ribuan Rupiah per porsi</p>
+    </div>
+  </div>
+
+  <!-- PACKAGES -->
+  <div class="menu-section" id="sec-packages">
+    <div class="vip-section-header">
+      <p class="eyebrow" data-i18n="pkg_eyebrow">Hemat & Lengkap</p>
+      <h2 data-i18n="pkg_title">Paket Prasmanan</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="menu-img-row">
+      <button class="menu-arrow-btn" onclick="navigateMenu(-1)" aria-label="Previous menu">&#8592;</button>
+      <div class="menu-img-col">
+        <div class="vip-subtabs">
+          <button class="vip-subtab-btn active" onclick="switchPkgSubtab(this,'prasmanan')" data-i18n="pkg_sub_prasmanan">Paket Prasmanan</button>
+          <button class="vip-subtab-btn" onclick="switchPkgSubtab(this,'6pax')" data-i18n="pkg_6pax">Paket 6 Pax</button>
+          <button class="vip-subtab-btn" onclick="switchPkgSubtab(this,'12pax')" data-i18n="pkg_12pax">Paket 12 Pax</button>
+        </div>
+        <div class="vip-subpanel active" id="pkgsub-prasmanan">
+          <img src="assets/2026MenuPrasmanan.jpg" alt="Paket Prasmanan" class="menu-img-display" style="max-width: 45%; margin: 0 auto; display: block;" />
+        </div>
+        <div class="vip-subpanel" id="pkgsub-6pax">
+          <img src="assets/2026Menu6Pax.jpg" alt="Paket 6 Pax" class="menu-img-display" style="max-width: 45%; margin: 0 auto; display: block;" />
+        </div>
+        <div class="vip-subpanel" id="pkgsub-12pax">
+          <img src="assets/2026Menu12Pax.jpg" alt="Paket 12 Pax" class="menu-img-display" style="max-width: 45%; margin: 0 auto; display: block;" />
+        </div>
+      </div>
+      <button class="menu-arrow-btn" onclick="navigateMenu(1)" aria-label="Next menu">&#8594;</button>
+    </div>
+    <p class="menu-caption" style="padding-bottom:2rem" data-i18n="cap_pkg">Harga dalam ribuan Rupiah · Belum termasuk PPN cafe</p>
+  </div>
+
+  <div class="book-cta-banner">
+    <p class="eyebrow" data-i18n="cta_eyebrow">Ingin menikmati lebih?</p>
+    <h3 data-i18n="cta_title">Reservasi VIP Room Kami</h3>
+    <a href="facilities.html#booking" class="btn-primary" data-i18n="cta_btn">Pesan Sekarang</a>
+  </div>
+</main>
+
+<footer>
+  <img src="assets/LocateCafeNew.png" alt="Locate Cafe" />
+  <p>
+    Jl. Karya No.257, Karang Berombak, Medan ·
+    <a href="mailto:locatecafemedan@gmail.com">locatecafemedan@gmail.com</a><br />
+    © 2025 Locate Cafe.
+  </p>
+</footer>
+
+<script>
+  function toggleMobile() { document.getElementById('mobileNav').classList.toggle('open'); }
+  function closeMobile() { document.getElementById('mobileNav').classList.remove('open'); }
+
+  const menuOrder = ['makanan', 'minuman', 'vip', 'packages'];
+
+  function activateSection(id) {
+    document.querySelectorAll('.menu-nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
+    const index = menuOrder.indexOf(id);
+    document.querySelectorAll('.menu-nav-btn')[index].classList.add('active');
+    document.getElementById('sec-' + id).classList.add('active');
+  }
+
+  function switchSection(btn, id) {
+    activateSection(id);
+  }
+
+  function navigateMenu(direction) {
+    const currentId = menuOrder.find(id => document.getElementById('sec-' + id).classList.contains('active'));
+    let index = menuOrder.indexOf(currentId);
+    index = (index + direction + menuOrder.length) % menuOrder.length;
+    activateSection(menuOrder[index]);
+  }
+
+  function switchVipSubtab(btn, id) {
+    const section = document.getElementById('sec-vip');
+    section.querySelectorAll('.vip-subtab-btn').forEach(b => b.classList.remove('active'));
+    section.querySelectorAll('.vip-subpanel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('vipsub-' + id).classList.add('active');
+  }
+
+  function switchPkgSubtab(btn, id) {
+    const section = document.getElementById('sec-packages');
+    section.querySelectorAll('.vip-subtab-btn').forEach(b => b.classList.remove('active'));
+    section.querySelectorAll('.vip-subpanel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('pkgsub-' + id).classList.add('active');
+  }
+
+  const translations = {
+    id: {
+      ph_eyebrow:'Sajian Kami', ph_title:'Menu Locate Cafe', ph_sub:'Harga belum termasuk PPN cafe',
+      tab_food:'Makanan', tab_drinks:'Minuman', tab_vip:'Paket VIP', tab_pkg:'Paket Prasmanan',
+      cap_food:'Menu Makanan 2026 · Harga dalam ribuan Rupiah',
+      cap_drinks:'Menu Minuman 2026 · Harga dalam ribuan Rupiah',
+      vip_eyebrow:'Eksklusif', vip_title:'Locate VIP Menu',
+      vip_sub_whole:'Paket Lengkap', vip_sub_komplit:'Paket Komplit', vip_sub_standard:'Menu VIP', vip_sub_outdoor:'Paket Outdoor',
+      cap_vip:'Menu VIP Prasmanan · Harga dalam ribuan Rupiah per porsi',
+      pkg_eyebrow:'Hemat & Lengkap', pkg_title:'Paket Prasmanan',
+      pkg_sub_prasmanan:'Paket Prasmanan', pkg_6pax:'Paket 6 Pax', pkg_12pax:'Paket 12 Pax',
+      cap_pkg:'Harga dalam ribuan Rupiah · Belum termasuk PPN cafe',
+      cta_eyebrow:'Ingin menikmati lebih?', cta_title:'Reservasi VIP Room Kami', cta_btn:'Pesan Sekarang'
+    },
+    en: {
+      ph_eyebrow:'Our Offerings', ph_title:'Locate Cafe Menu', ph_sub:'Prices exclude cafe tax (PPN)',
+      tab_food:'Food', tab_drinks:'Drinks', tab_vip:'VIP Package', tab_pkg:'Locate Special Menu',
+      cap_food:'Food Menu 2026 · Prices in thousands of Rupiah',
+      cap_drinks:'Drinks Menu 2026 · Prices in thousands of Rupiah',
+      vip_eyebrow:'Exclusive', vip_title:'Locate VIP Menu',
+      vip_sub_whole:'Whole Package', vip_sub_komplit:'Complete Package', vip_sub_standard:'VIP Menu', vip_sub_outdoor:'Outdoor Package',
+      cap_vip:'VIP Buffet Menu · Prices in thousands of Rupiah per portion',
+      pkg_eyebrow:'Great Value', pkg_title:'Locate Special Menu',
+      pkg_sub_prasmanan:'Locate Special Menu', pkg_6pax:'6 Pax Package', pkg_12pax:'12 Pax Package',
+      cap_pkg:'Prices in thousands of Rupiah · Excluding cafe tax',
+      cta_eyebrow:'Want more?', cta_title:'Reserve Our VIP Room', cta_btn:'Book Now'
+    },
+    zh: {
+      ph_eyebrow:'我们的美食', ph_title:'Locate Cafe 菜单', ph_sub:'价格不含餐厅税',
+      tab_food:'餐食', tab_drinks:'饮品', tab_vip:'VIP套餐', tab_pkg:'特色套餐',
+      cap_food:'2026年餐食菜单 · 价格以千印尼盾为单位',
+      cap_drinks:'2026年饮品菜单 · 价格以千印尼盾为单位',
+      vip_eyebrow:'专属', vip_title:'Locate VIP菜单',
+      vip_sub_whole:'整体套餐', vip_sub_komplit:'完整套餐', vip_sub_standard:'VIP菜单', vip_sub_outdoor:'户外套餐',
+      cap_vip:'VIP自助菜单 · 价格以千印尼盾每份',
+      pkg_eyebrow:'超值优惠', pkg_title:'特色套餐',
+      pkg_sub_prasmanan:'特色套餐', pkg_6pax:'6人套餐', pkg_12pax:'12人套餐',
+      cap_pkg:'价格以千印尼盾为单位 · 不含餐厅税',
+      cta_eyebrow:'想要更多？', cta_title:'预订我们的VIP包厢', cta_btn:'立即预订'
+    }
+  };
+
+  function setLang(lang) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) el.innerHTML = t[key];
+    });
+  }
+</script>
+</body>
+</html>

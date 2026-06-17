@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fasilitas & Reservasi — Locate Cafe</title>
+  <link rel="icon" href="assets/LocateCafeNew.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #1B2A3A; --navy-deep: #0E1A26;
+      --gold: #C8972A; --gold-light: #E8BF6A;
+      --brick: #8B3A2A; --parchment: #F5EDD8;
+      --parchment2: #EDE0C4; --green: #2E4A3A;
+      --white: #FFFDF7;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', sans-serif; background: var(--navy-deep); color: var(--parchment); overflow-x: hidden; }
+
+    /* LANG STRIP */
+    .lang-strip {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; justify-content: flex-end; align-items: center;
+      padding: 0 2rem; background: rgba(14,26,38,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,151,42,0.2); height: 36px;
+    }
+    .lang-btn {
+      background: none; border: none; color: var(--parchment);
+      font-family: 'Lato', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0 0.9rem; height: 100%; cursor: pointer;
+      transition: color 0.2s; border-right: 1px solid rgba(200,151,42,0.2);
+    }
+    .lang-btn:first-child { border-left: 1px solid rgba(200,151,42,0.2); }
+    .lang-btn.active { color: var(--gold); }
+    .lang-btn:hover { color: var(--gold-light); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 36px; left: 0; right: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.8rem 2.5rem;
+      background: rgba(14, 26, 38, 0.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+    }
+    .nav-logo img { height: 52px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      color: var(--parchment); text-decoration: none;
+      font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase;
+      transition: color 0.2s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 100%;
+      height: 1px; background: var(--gold); transition: right 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { right: 0; }
+    .nav-book {
+      background: var(--gold); color: var(--navy-deep) !important;
+      padding: 0.45rem 1.2rem; border-radius: 2px; font-weight: 700;
+    }
+    .nav-book:hover { background: var(--gold-light) !important; }
+    .nav-book::after { display: none !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 26px; height: 2px; background: var(--parchment); }
+    .mobile-nav {
+      display: none; position: fixed; top: 36px; left: 0; right: 0; bottom: 0;
+      background: rgba(14,26,38,0.98); z-index: 998;
+      flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a { color: var(--parchment); text-decoration: none; font-family: 'Playfair Display', serif; font-size: 1.8rem; }
+    .mobile-nav a:hover { color: var(--gold); }
+
+    /* PAGE HERO */
+    .page-hero {
+      padding-top: calc(36px + 74px);
+      background: linear-gradient(to bottom, var(--navy-deep), var(--navy));
+      padding-bottom: 4rem;
+      text-align: center;
+    }
+    .page-hero .eyebrow {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem; color: var(--gold-light);
+      display: block; margin-bottom: 0.4rem;
+    }
+    .page-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700; color: var(--parchment);
+    }
+    .page-hero .divider {
+      width: 50px; height: 1px; background: var(--gold); margin: 1.2rem auto;
+    }
+    .page-hero p {
+      font-size: 1rem; color: rgba(245,237,216,0.65);
+      max-width: 540px; margin: 0 auto; line-height: 1.75;
+    }
+
+    /* FACILITIES DETAIL */
+    .fac-section {
+      padding: 5rem 2rem;
+    }
+    .fac-section:nth-child(even) { background: var(--parchment); color: var(--navy); }
+    .fac-section:nth-child(odd) { background: var(--navy); color: var(--parchment); }
+
+    .fac-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .fac-inner.reverse { direction: rtl; }
+    .fac-inner.reverse > * { direction: ltr; }
+
+    .fac-photo {
+      width: 100%; aspect-ratio: 4/3;
+      border-radius: 4px;
+      object-fit: cover;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem;
+      background: linear-gradient(135deg, rgba(200,151,42,0.1), rgba(139,58,42,0.15));
+      border: 1px solid rgba(200,151,42,0.2);
+    }
+    .fac-section:nth-child(even) .fac-photo {
+      background: linear-gradient(135deg, rgba(27,42,58,0.08), rgba(139,58,42,0.12));
+      border-color: rgba(27,42,58,0.15);
+    }
+
+    .fac-detail .eyebrow {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2rem; color: var(--gold); margin-bottom: 0.4rem;
+    }
+    .fac-section:nth-child(even) .fac-detail .eyebrow { color: var(--brick); }
+    .fac-detail h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700;
+      margin-bottom: 1.2rem; line-height: 1.2;
+    }
+    .fac-detail p {
+      font-size: 0.95rem; line-height: 1.8; margin-bottom: 1rem;
+      color: rgba(245,237,216,0.75);
+    }
+    .fac-section:nth-child(even) .fac-detail p { color: #3a4a5a; }
+    .fac-specs {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; margin-bottom: 1.4rem;
+    }
+    .spec-tag {
+      background: rgba(200,151,42,0.12); border: 1px solid rgba(200,151,42,0.3);
+      color: var(--gold-light); padding: 0.3rem 0.8rem; border-radius: 2px;
+      font-size: 0.75rem; letter-spacing: 0.1em;
+    }
+    .fac-section:nth-child(even) .spec-tag {
+      background: rgba(27,42,58,0.08); border-color: rgba(27,42,58,0.2);
+      color: var(--navy);
+    }
+    .btn-primary {
+      display: inline-block; background: var(--gold); color: var(--navy-deep);
+      text-decoration: none; font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 0.9rem 2rem; border-radius: 2px; border: 2px solid var(--gold);
+      transition: background 0.2s; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+
+    /* BOOKING FORM */
+    #booking {
+      background: var(--navy-deep); padding: 6rem 2rem;
+    }
+    .booking-inner { max-width: 780px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-header .eyebrow {
+      font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: var(--gold-light);
+      display: block; margin-bottom: 0.4rem;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 2.6rem);
+      font-weight: 700; color: var(--parchment);
+    }
+    .section-header .divider { width: 50px; height: 1px; background: var(--gold); margin: 1rem auto 0; }
+
+    .booking-form {
+      background: rgba(245,237,216,0.04); border: 1px solid rgba(200,151,42,0.2);
+      border-radius: 6px; padding: 2.5rem 3rem;
+    }
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem;
+    }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-group {
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .form-group label {
+      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold-light);
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      background: rgba(245,237,216,0.07); border: 1px solid rgba(200,151,42,0.25);
+      border-radius: 3px; padding: 0.75rem 1rem; color: var(--parchment);
+      font-family: 'Lato', sans-serif; font-size: 1rem;
+      transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--gold);
+    }
+    .form-group select option { background: var(--navy); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+
+    .deposit-notice {
+      background: rgba(200,151,42,0.1); border: 1px solid rgba(200,151,42,0.3);
+      border-radius: 3px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
+    }
+    .deposit-notice h4 {
+      font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .deposit-notice p { font-size: 0.85rem; line-height: 1.7; color: rgba(245,237,216,0.7); }
+    .deposit-notice ul { padding-left: 1.2rem; margin-top: 0.4rem; }
+    .deposit-notice ul li { font-size: 0.85rem; color: rgba(245,237,216,0.65); line-height: 1.8; }
+
+    .form-submit-row {
+      display: flex; gap: 1rem; align-items: center; justify-content: space-between;
+      margin-top: 1.5rem; flex-wrap: wrap;
+    }
+    .submit-note { font-size: 0.78rem; color: rgba(245,237,216,0.45); }
+    .btn-submit {
+      background: var(--gold); color: var(--navy-deep); border: none;
+      padding: 1rem 2.5rem; font-family: 'Lato', sans-serif; font-size: 0.85rem;
+      font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      border-radius: 3px; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-submit:hover { background: var(--gold-light); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy-deep);
+      border-top: 1px solid rgba(200,151,42,0.15);
+      padding: 3rem 2rem 2rem; text-align: center;
+    }
+    footer img { height: 60px; margin-bottom: 1rem; }
+    footer p { font-size: 0.78rem; color: rgba(245,237,216,0.35); letter-spacing: 0.1em; line-height: 1.8; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0.7rem 1.2rem; }
+      .lang-strip { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .fac-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .fac-inner.reverse { direction: ltr; }
+      .form-row { grid-template-columns: 1fr; }
+      .booking-form { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="lang-strip">
+  <button class="lang-btn active" onclick="setLang('id')">ID</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('zh')">中文</button>
+</div>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html#about" onclick="closeMobile()">Tentang</a>
+  <a href="facilities.html" onclick="closeMobile()">Fasilitas</a>
+  <a href="menu.html">Menu</a>
+
+  <a href="index.html#contact" onclick="closeMobile()">Kontak</a>
+  <a href="#booking" onclick="closeMobile()" class="btn-primary">Pesan VIP</a>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><img src="assets/LocateCafeNew.png" alt="Locate Cafe" /></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">Tentang</a></li>
+    <li><a href="facilities.html">Fasilitas</a></li>
+    <li><a href="menu.html">Menu</a></li>
+
+    <li><a href="index.html#contact">Kontak</a></li>
+    <li><a href="#booking" class="nav-book">Pesan VIP</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <span class="eyebrow" data-i18n="ph_eyebrow">Ruang & Fasilitas</span>
+  <h1 data-i18n="ph_title">Pilih Suasanamu</h1>
+  <div class="divider"></div>
+  <p data-i18n="ph_sub">Dari ruang VIP privat hingga panggung karaoke mini — setiap ruang di Locate Cafe dirancang untuk pengalaman yang tak terlupakan.</p>
+</div>
+
+<!-- VIP ROOM -->
+<section class="fac-section" id="vip">
+  <div class="fac-inner">
+    <img src="assets/VIPRoom.jpg" class="fac-photo reveal" alt="VIP Room" />
+    <div class="fac-detail reveal" style="transition-delay:0.15s">
+      <p class="eyebrow" data-i18n="vip_eyebrow">Ruang Eksklusif</p>
+      <h2 data-i18n="vip_title">VIP Room</h2>
+      <p data-i18n="vip_p1">Ruang privat yang cozy dengan kapasitas sampai 25 orang, lengkap dengan fasilitas AC, Projector, wastafel pribadi, dan sepasang Stereo Speakers plus wireless Mics. Perfect choice buat rapat, celebration, atau sekadar kumpul bareng keluarga dan sahabat.</p>
+      <p data-i18n="vip_p2">Detail lengkap dan harga deposit akan segera diinformasikan. Hubungi kami terlebih dahulu untuk ketersediaan.</p>
+      <div class="fac-specs">
+        <span class="spec-tag" data-i18n="spec_cap">Kapasitas 25 orang</span>
+        <span class="spec-tag">AC</span>
+        <span class="spec-tag" data-i18n="spec_projector">Projector</span>
+        <span class="spec-tag" data-i18n="spec_handbasin">Wastafel Pribadi</span>
+        <span class="spec-tag" data-i18n="spec_audio_vip">Stereo Speakers & Wireless Mic</span>
+        <span class="spec-tag" data-i18n="spec_private">Ruang Privat</span>
+      </div>
+      <a href="#booking" class="btn-primary" data-i18n="vip_book_btn">Reservasi Sekarang</a>
+    </div>
+  </div>
+</section>
+
+<!-- OUTDOOR SEATING -->
+<section class="fac-section" id="outdoor">
+  <div class="fac-inner reverse">
+    <img src="assets/OutdoorSeating.jpg" class="fac-photo reveal" alt="Outdoor Seating" />
+    <div class="fac-detail reveal" style="transition-delay:0.15s">
+      <p class="eyebrow" data-i18n="out_eyebrow">Area Terbuka</p>
+      <h2 data-i18n="out_title">Outdoor Seating</h2>
+      <p data-i18n="out_p1">Nikmati area yang luas dengan jendela besar yang dapet natural lighting langsung dari luar. Dipadukan dengan semi-industrial vibes dan tata lampu yang unik, bikin suasana makin terasa aesthetic.</p>
+      <div class="fac-specs">
+        <span class="spec-tag" data-i18n="spec_cap_outdoor">Kapasitas 55 orang</span>
+        <span class="spec-tag" data-i18n="spec_open">Area Luas</span>
+        <span class="spec-tag" data-i18n="spec_window">Jendela Besar & Natural Light</span>
+        <span class="spec-tag" data-i18n="spec_ind">Semi-Industrial Style</span>
+        <span class="spec-tag" data-i18n="spec_lighting">Tata Lampu Unik</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRASS CORNER -->
+<section class="fac-section" id="grass">
+  <div class="fac-inner">
+    <img src="assets/ChillCorner.jpg" class="fac-photo reveal" alt="Chill Grass Corner" style="object-fit: cover; object-position: center 68%;" />
+    <div class="fac-detail reveal" style="transition-delay:0.15s">
+      <p class="eyebrow" data-i18n="grass_eyebrow">Santai & Chill</p>
+      <h2 data-i18n="grass_title">Chill Grass Corner</h2>
+      <p data-i18n="grass_p1">Sudut rumput sintetis yang cozy banget buat chilling dan foto-foto aesthetic bareng geng kamu. Lengkap dengan beanbag yang empuk dan mini table, jadi kamu bisa sambil dine-in dan main games seru di sini loh!</p>
+      <div class="fac-specs">
+        <span class="spec-tag" data-i18n="spec_cap_grass">Kapasitas 10 orang</span>
+        <span class="spec-tag" data-i18n="spec_grass">Rumput Sintetis</span>
+        <span class="spec-tag" data-i18n="spec_beanbag">Beanbag Empuk</span>
+        <span class="spec-tag" data-i18n="spec_minitable">Mini Table</span>
+        <span class="spec-tag" data-i18n="spec_photo">Spot Foto Estetik</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KARAOKE -->
+<section class="fac-section" id="karaoke">
+  <div class="fac-inner reverse">
+    <img src="assets/KaraokeStage.jpg" class="fac-photo reveal" alt="Mini Karaoke Stage" style="object-fit: cover; object-position: center 68%;" />
+    <div class="fac-detail reveal" style="transition-delay:0.15s">
+      <p class="eyebrow" data-i18n="kar_eyebrow">Hiburan</p>
+      <h2 data-i18n="kar_title">Mini Karaoke Stage</h2>
+      <p data-i18n="kar_p1">Panggung karaoke mini yang simpel tapi fasilitasnya lengkap banget buat bikin event kamu makin hidup! Sistem audionya sudah kompatibel dengan Bluetooth dan kabel Audio jack, lengkap dengan 2 mics, stereo speakers yang mantap, plus tripod buat taruh HP atau tablet biar kamu bisa dengan mudah baca lirik sambil nyanyiin lagu favorit bareng crowd kamu.</p>
+      <div class="fac-specs">
+        <span class="spec-tag" data-i18n="spec_cap_karaoke">Kapasitas 5 penyanyi</span>
+        <span class="spec-tag" data-i18n="spec_audio">Bluetooth & Audio Jack</span>
+        <span class="spec-tag" data-i18n="spec_mics">2 Mics & Stereo Speakers</span>
+        <span class="spec-tag" data-i18n="spec_tripod">Tripod HP/Tablet</span>
+        <span class="spec-tag" data-i18n="spec_stage">Mini Stage</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING FORM -->
+<section id="booking">
+  <div class="booking-inner">
+    <div class="section-header reveal">
+      <span class="eyebrow" data-i18n="bk_eyebrow">Reservasi</span>
+      <h2 data-i18n="bk_title">Pesan VIP Room</h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="deposit-notice reveal">
+      <h4 data-i18n="dep_title">📋 Informasi Deposit</h4>
+      <p data-i18n="dep_p">Pemesanan VIP Room memerlukan pembayaran deposit terlebih dahulu. Setelah formulir dikirim, tim kami akan menghubungi Anda melalui WhatsApp dalam 1×24 jam dengan:</p>
+      <ul>
+        <li data-i18n="dep_l1">Konfirmasi ketersediaan tanggal</li>
+        <li data-i18n="dep_l2">Jumlah deposit yang harus dibayarkan</li>
+        <li data-i18n="dep_l3">Metode pembayaran (transfer bank / e-wallet)</li>
+        <li data-i18n="dep_l4">Konfirmasi reservasi final setelah deposit diterima</li>
+      </ul>
+    </div>
+
+    <div class="booking-form reveal" style="transition-delay:0.1s">
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="lbl_name">Nama Lengkap</label>
+          <input type="text" id="bk-name" placeholder="John Doe" />
+        </div>
+        <div class="form-group">
+          <label data-i18n="lbl_phone">Nomor WhatsApp</label>
+          <input type="tel" id="bk-phone" placeholder="+62 812-xxxx-xxxx" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="lbl_date">Tanggal Reservasi</label>
+          <input type="date" id="bk-date" />
+        </div>
+        <div class="form-group">
+          <label data-i18n="lbl_time">Waktu Mulai</label>
+          <select id="bk-time">
+            <option value="">-- Pilih Waktu --</option>
+            <option>12:00</option><option>13:00</option><option>14:00</option>
+            <option>15:00</option><option>16:00</option><option>17:00</option>
+            <option>18:00</option><option>19:00</option><option>20:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="lbl_guests">Jumlah Tamu</label>
+          <input type="number" id="bk-guests" min="1" placeholder="Contoh: 10" />
+        </div>
+        <div class="form-group">
+          <label data-i18n="lbl_occasion">Jenis Acara</label>
+          <select id="bk-occasion">
+            <option data-i18n="occ_1">Arisan / Pertemuan Keluarga</option>
+            <option data-i18n="occ_2">Ulang Tahun</option>
+            <option data-i18n="occ_3">Rapat / Meeting</option>
+            <option data-i18n="occ_4">Makan Siang / Malam</option>
+            <option data-i18n="occ_6">Pernikahan</option>
+            <option data-i18n="occ_7">Perayaan</option>
+            <option data-i18n="occ_5">Lainnya</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label data-i18n="lbl_notes">Catatan Khusus (opsional)</label>
+          <textarea id="bk-notes" placeholder="Permintaan khusus, alergi makanan, dekorasi, dll..."></textarea>
+        </div>
+      </div>
+      <div class="form-submit-row">
+        <p class="submit-note" data-i18n="submit_note">Kami akan menghubungi Anda via WhatsApp dalam 1×24 jam.</p>
+        <button class="btn-submit" onclick="sendBooking()" data-i18n="submit_btn">Kirim Permintaan</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <img src="assets/LocateCafeNew.png" alt="Locate Cafe" />
+  <p>
+    Jl. Karya No.257, Karang Berombak, Medan ·
+    <a href="mailto:locatecafemedan@gmail.com">locatecafemedan@gmail.com</a><br />
+    © 2025 Locate Cafe. Seluruh hak dilindungi.
+  </p>
+</footer>
+
+<script>
+  function toggleMobile() { document.getElementById('mobileNav').classList.toggle('open'); }
+  function closeMobile() { document.getElementById('mobileNav').classList.remove('open'); }
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  function sendBooking() {
+    const name    = document.getElementById('bk-name').value.trim();
+    const phone   = document.getElementById('bk-phone').value.trim();
+    const date    = document.getElementById('bk-date').value;
+    const time    = document.getElementById('bk-time').value;
+    const guests  = document.getElementById('bk-guests').value;
+    const occasion= document.getElementById('bk-occasion').value;
+    const notes   = document.getElementById('bk-notes').value.trim();
+
+    if (!name || !phone || !date || !time || !guests) {
+      alert('Mohon lengkapi semua field yang diperlukan (nama, nomor WA, tanggal, waktu, jumlah tamu).');
+      return;
+    }
+
+    const msg = encodeURIComponent(
+      `Halo Locate Cafe! 👋\n\nSaya ingin memesan VIP Room:\n\n` +
+      `👤 Nama: ${name}\n` +
+      `📅 Tanggal: ${date}\n` +
+      `⏰ Waktu: ${time}\n` +
+      `👥 Tamu: ${guests}\n` +
+      `🎉 Acara: ${occasion}\n` +
+      (notes ? `📝 Catatan: ${notes}\n` : '') +
+      `\nMohon konfirmasi ketersediaan dan informasi deposit. Terima kasih!`
+    );
+    window.open(`https://wa.me/6281269509936?text=${msg}`, '_blank');
+  }
+
+  // Language
+  const translations = {
+    id: {
+      ph_eyebrow:'Ruang & Fasilitas', ph_title:'Pilih Suasanamu',
+      ph_sub:'Dari ruang VIP privat hingga panggung karaoke mini — setiap ruang di Locate Cafe dirancang untuk pengalaman yang tak terlupakan.',
+      vip_eyebrow:'Ruang Eksklusif', vip_title:'VIP Room',
+      vip_p1:'Ruang privat yang cozy dengan kapasitas sampai 25 orang, lengkap dengan fasilitas AC, Projector, wastafel pribadi, dan sepasang Stereo Speakers plus wireless Mics. Perfect choice buat rapat, celebration, atau sekadar kumpul bareng keluarga dan sahabat.',
+      vip_p2:'Detail lengkap dan harga deposit akan segera diinformasikan. Hubungi kami terlebih dahulu untuk ketersediaan.',
+      spec_cap:'Kapasitas 25 orang', spec_projector:'Projector', spec_handbasin:'Wastafel Pribadi', spec_audio_vip:'Stereo Speakers & Wireless Mic', spec_private:'Ruang Privat',
+      vip_book_btn:'Reservasi Sekarang',
+      out_eyebrow:'Area Terbuka', out_title:'Outdoor Seating',
+      out_p1:'Nikmati area yang luas dengan jendela besar yang dapet natural lighting langsung dari luar. Dipadukan dengan semi-industrial vibes dan tata lampu yang unik, bikin suasana makin terasa aesthetic.',
+      spec_open:'Area Luas', spec_window:'Jendela Besar & Natural Light', spec_ind:'Semi-Industrial Style', spec_lighting:'Tata Lampu Unik', spec_cap_outdoor:'Kapasitas 55 orang',
+      grass_eyebrow:'Santai & Chill', grass_title:'Chill Grass Corner',
+      grass_p1:'Sudut rumput sintetis yang cozy banget buat chilling dan foto-foto aesthetic bareng geng kamu. Lengkap dengan beanbag yang empuk dan mini table, jadi kamu bisa sambil dine-in dan main games seru di sini loh!',
+      spec_grass:'Rumput Sintetis', spec_beanbag:'Beanbag Empuk', spec_minitable:'Mini Table', spec_photo:'Spot Foto Estetik', spec_cap_grass:'Kapasitas 10 orang',
+      kar_eyebrow:'Hiburan', kar_title:'Mini Karaoke Stage',
+      kar_p1:'Panggung karaoke mini yang simpel tapi fasilitasnya lengkap banget buat bikin event kamu makin hidup! Sistem audionya sudah kompatibel dengan Bluetooth dan kabel Audio jack, lengkap dengan 2 mics, stereo speakers yang mantap, plus tripod buat taruh HP atau tablet biar kamu bisa dengan mudah baca lirik sambil nyanyiin lagu favorit bareng crowd kamu.',
+      spec_audio:'Bluetooth & Audio Jack', spec_mics:'2 Mics & Stereo Speakers', spec_tripod:'Tripod HP/Tablet', spec_stage:'Mini Stage', spec_cap_karaoke:'Kapasitas 5 penyanyi',
+      bk_eyebrow:'Reservasi', bk_title:'Pesan VIP Room',
+      dep_title:'📋 Informasi Deposit',
+      dep_p:'Pemesanan VIP Room memerlukan pembayaran deposit terlebih dahulu. Tim kami akan menghubungi Anda melalui WhatsApp dalam 1×24 jam dengan:',
+      dep_l1:'Konfirmasi ketersediaan tanggal', dep_l2:'Jumlah deposit yang harus dibayarkan',
+      dep_l3:'Metode pembayaran (transfer bank / e-wallet)', dep_l4:'Konfirmasi reservasi final setelah deposit diterima',
+      lbl_name:'Nama Lengkap', lbl_phone:'Nomor WhatsApp', lbl_date:'Tanggal Reservasi',
+      lbl_time:'Waktu Mulai', lbl_guests:'Jumlah Tamu', lbl_occasion:'Jenis Acara', lbl_notes:'Catatan Khusus (opsional)',
+      occ_1:'Arisan / Pertemuan Keluarga', occ_2:'Ulang Tahun', occ_3:'Rapat / Meeting',
+      occ_4:'Makan Siang / Malam', occ_6:'Pernikahan', occ_7:'Perayaan', occ_5:'Lainnya',
+      submit_note:'Kami akan menghubungi Anda via WhatsApp dalam 1×24 jam.',
+      submit_btn:'Kirim Permintaan'
+    },
+    en: {
+      ph_eyebrow:'Spaces & Facilities', ph_title:'Choose Your Vibe',
+      ph_sub:'From a private VIP room to a mini karaoke stage — every space at Locate Cafe is designed for an unforgettable experience.',
+      vip_eyebrow:'Exclusive Space', vip_title:'VIP Room',
+      vip_p1:'A private room for up to 25 guests, complete with AC, Projector, personal handbasin and a pair of Stereo Speakers with wireless Mics. Perfect for meetings, celebrations or family and friend gatherings.',
+      vip_p2:'Full details and deposit pricing coming soon. Contact us to check availability.',
+      spec_cap:'Up to 25 guests', spec_projector:'Projector', spec_handbasin:'Personal Handbasin', spec_audio_vip:'Stereo Speakers & Wireless Mic', spec_private:'Private Room',
+      vip_book_btn:'Reserve Now',
+      out_eyebrow:'Open Air', out_title:'Outdoor Seating',
+      out_p1:'Enjoy the wide space and big windows with natural lights from outside fitted with semi-industrial style vibes as well as unique light setups.',
+      spec_open:'Wide Space', spec_window:'Big Windows & Natural Light', spec_ind:'Semi-Industrial Style', spec_lighting:'Unique Light Setups', spec_cap_outdoor:'Up to 55 guests',
+      grass_eyebrow:'Relax & Chill', grass_title:'Chill Grass Corner',
+      grass_p1:'A cozy synthetic grass patch corner for chilling and taking aesthetic photos with friends, complete with comfy beanbags and mini table, so you can dine and play games in here too!',
+      spec_grass:'Synthetic Grass', spec_beanbag:'Comfy Beanbags', spec_minitable:'Mini Table', spec_photo:'Aesthetic Photo Spot', spec_cap_grass:'Up to 10 guests',
+      kar_eyebrow:'Karaoke Party', kar_title:'Mini Karaoke Stage',
+      kar_p1:'A simple yet fully equipped mini karaoke stage to liven up your events. Full Bluetooth and Audio jack compatible audio systems with 2 mics, big stereo speakers and a tripod for phone/tablet for you to easily read off the lyrics while singing your favorite tunes with your crowds.',
+      spec_audio:'Bluetooth & Audio Jack', spec_mics:'2 Mics & Stereo Speakers', spec_tripod:'Phone/Tablet Tripod', spec_stage:'Mini Stage', spec_cap_karaoke:'Up to 5 singers',
+      bk_eyebrow:'Reservation', bk_title:'Book the VIP Room',
+      dep_title:'📋 Deposit Information',
+      dep_p:'VIP Room bookings require a deposit payment. Our team will contact you via WhatsApp within 24 hours with:',
+      dep_l1:'Date availability confirmation', dep_l2:'Deposit amount required',
+      dep_l3:'Payment method (bank transfer / e-wallet)', dep_l4:'Final booking confirmation upon deposit receipt',
+      lbl_name:'Full Name', lbl_phone:'WhatsApp Number', lbl_date:'Reservation Date',
+      lbl_time:'Start Time', lbl_guests:'Number of Guests', lbl_occasion:'Type of Event', lbl_notes:'Special Requests (optional)',
+      occ_1:'Family Gathering / Arisan', occ_2:'Birthday', occ_3:'Business Meeting',
+      occ_4:'Lunch / Dinner', occ_6:'Wedding', occ_7:'Celebration', occ_5:'Other',
+      submit_note:'We\'ll contact you via WhatsApp within 24 hours.',
+      submit_btn:'Send Request'
+    },
+    zh: {
+      ph_eyebrow:'空间与设施', ph_title:'选择你的氛围',
+      ph_sub:'从私人VIP包厢到迷你卡拉OK舞台——Locate Cafe的每一个空间都为难忘体验而设计。',
+      vip_eyebrow:'专属空间', vip_title:'VIP包厢',
+      vip_p1:'一个可以容纳多达25人的私密小空间，里面空调、投影机、专属洗手盆一应俱全，还配了一对带无线麦克风的立体声音响。不管是开会、庆祝生日，还是和家人朋友的小聚会，选这里准没错。',
+      vip_p2:'详细信息和押金定价即将公布。请联系我们确认可用性。',
+      spec_cap:'最多25位宾客', spec_projector:'投影机', spec_handbasin:'专属洗手盆', spec_audio_vip:'立体声音响及无线麦克风', spec_private:'私人包厢',
+      vip_book_btn:'立即预订',
+      out_eyebrow:'户外区域', out_title:'户外座位区',
+      out_p1:'享受宽敞的空间和超大窗户带来的户外自然光，这里还自带半工业风的独特氛围，搭配上别具一格的灯光设计，随手一拍都很出片。',
+      spec_open:'宽敞空间', spec_window:'大窗户与自然光', spec_ind:'半工业风格', spec_lighting:'独特灯光设计', spec_cap_outdoor:'最多55位宾客',
+      grass_eyebrow:'休闲放松', grass_title:'绿茵休闲角',
+      grass_p1:'一个铺满人造草坪的温馨小角落，超级适合和朋友一起放松聊天、拍好看的氛围感照片。这里不仅有舒服的懒人沙发和迷你小桌子，你还可以坐在这儿一边吃吃喝喝，一边快乐地玩桌游呢！',
+      spec_grass:'人造草坪', spec_beanbag:'舒适懒人沙发', spec_minitable:'迷你小桌子', spec_photo:'美拍打卡点', spec_cap_grass:'最多10位宾客',
+      kar_eyebrow:'娱乐设施', kar_title:'迷你卡拉OK舞台',
+      kar_p1:'一个简简单单、设备却超级齐全的微型卡拉OK舞台，绝对能瞬间炒热你的活动气氛！音响系统不仅支持蓝牙和音频线连接，还配齐了2个麦克风、超给力的立体声大音箱，甚至连放手机或平板的三角支架都帮你准备好了。让你一边轻松看歌词，一边和全场朋友一起嗨唱最喜欢的歌曲！',
+      spec_audio:'蓝牙与音频线连接', spec_mics:'2个麦克风及立体声音箱', spec_tripod:'手机/平板三角支架', spec_stage:'迷你舞台', spec_cap_karaoke:'最多5位歌手',
+      bk_eyebrow:'预订', bk_title:'预订VIP包厢',
+      dep_title:'📋 VIP 包厢预订须知',
+      dep_p:'预订 VIP 包厢需要先支付定金哦。我们的团队会在24小时内通过WhatsApp联络您，确认以下信息：',
+      dep_l1:'确认您要预订的日期是否有空位', dep_l2:'具体的定金金额',
+      dep_l3:'支付方式（银行转账 / 电子钱包）', dep_l4:'收到定金后，为您发送最终的预订成功确认',
+      lbl_name:'姓名', lbl_phone:'WhatsApp号码', lbl_date:'预订日期',
+      lbl_time:'开始时间', lbl_guests:'宾客人数', lbl_occasion:'活动类型', lbl_notes:'特殊要求（可选）',
+      occ_1:'家庭聚会', occ_2:'生日', occ_3:'商务会议',
+      occ_4:'午餐/晚餐', occ_6:'婚礼', occ_7:'庆典', occ_5:'其他',
+      submit_note:'我们将在24小时内通过WhatsApp联系您。',
+      submit_btn:'发送请求'
+    }
+  };
+
+  const guestsPlaceholder = { id: 'Contoh: 10', en: 'e.g. 10', zh: '例如：10' };
+
+  function setLang(lang) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key]) el.innerHTML = t[key];
+    });
+    document.getElementById('bk-guests').placeholder = guestsPlaceholder[lang];
+  }
+</script>
+</body>
+</html>
