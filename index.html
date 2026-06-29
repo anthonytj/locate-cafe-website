@@ -41,6 +41,7 @@
     "@context": "https://schema.org",
     "@type": "Restaurant",
     "name": "Locate Cafe",
+    "description": "Locate Cafe adalah cafe bertema industrial yang hangat di Karang Berombak, Medan, Sumatera Utara. Seluruh menu halal, dengan hidangan Nusantara, western, aneka minuman, kopi, dan paket prasmanan. Tersedia Ruang VIP privat untuk 25 orang (AC, projector, sound system), area outdoor hingga 55 orang, sudut santai beanbag, dan panggung karaoke mini. Wi-Fi dan parkir gratis. Buka setiap hari kecuali Senin, pukul 12.00–22.00 WIB. Cocok untuk nongkrong, ulang tahun, arisan, rapat, dan acara keluarga.",
     "image": "https://locatecafe.com/assets/LocateCafeNew.png",
     "url": "https://locatecafe.com/",
     "telephone": "+62-812-6950-9936",
@@ -73,8 +74,66 @@
       "https://www.tiktok.com/@locate.cafe.medan",
       "https://www.facebook.com/profile.php?id=61566309878934"
     ],
+    "amenityFeature": [
+      { "@type": "LocationFeatureSpecification", "name": "Free Wi-Fi", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Free Parking", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Halal Food", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Private VIP Room", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Outdoor Seating", "value": true },
+      { "@type": "LocationFeatureSpecification", "name": "Karaoke", "value": true }
+    ],
     "acceptsReservations": "https://locatecafe.com/facilities.html#booking",
     "hasMenu": "https://locatecafe.com/menu.html"
+  }
+  </script>
+
+  <!-- JSON-LD Structured Data: FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Apakah Locate Cafe halal?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Ya, seluruh hidangan dan minuman di Locate Cafe halal, sehingga nyaman dinikmati semua kalangan." }
+      },
+      {
+        "@type": "Question",
+        "name": "Di mana lokasi Locate Cafe?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Locate Cafe berlokasi di Jl. Karya No.257, Karang Berombak, Kec. Medan Barat, Kota Medan, Sumatera Utara 20115." }
+      },
+      {
+        "@type": "Question",
+        "name": "Jam berapa Locate Cafe buka?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Locate Cafe buka setiap hari kecuali Senin, dari pukul 12.00 hingga 22.00 WIB." }
+      },
+      {
+        "@type": "Question",
+        "name": "Apakah Locate Cafe memiliki ruang VIP?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Ya, tersedia Ruang VIP privat berkapasitas hingga 25 orang, dilengkapi AC, projector, wastafel pribadi, dan sound system dengan wireless mic. Cocok untuk rapat, ulang tahun, arisan, atau perayaan." }
+      },
+      {
+        "@type": "Question",
+        "name": "Bagaimana cara memesan Ruang VIP?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Anda dapat melakukan reservasi melalui formulir di halaman Fasilitas, dan tim kami akan menghubungi Anda via WhatsApp untuk konfirmasi ketersediaan serta informasi deposit." }
+      },
+      {
+        "@type": "Question",
+        "name": "Fasilitas apa saja yang tersedia di Locate Cafe?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Locate Cafe memiliki Ruang VIP (25 orang), area outdoor (hingga 55 orang), sudut santai dengan beanbag, dan panggung karaoke mini. Tersedia juga Wi-Fi gratis dan parkir gratis untuk pelanggan." }
+      },
+      {
+        "@type": "Question",
+        "name": "Apakah tersedia tempat parkir dan Wi-Fi?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Ya, Locate Cafe menyediakan parkir gratis dan Wi-Fi gratis untuk seluruh pelanggan." }
+      },
+      {
+        "@type": "Question",
+        "name": "Apakah Locate Cafe cocok untuk acara dan gathering?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Sangat cocok. Dengan ruang VIP, area outdoor luas, panggung karaoke, dan paket prasmanan untuk 6 atau 12 orang, Locate Cafe ideal untuk ulang tahun, arisan, rapat kerja, hingga perayaan keluarga." }
+      }
+    ]
   }
   </script>
 
@@ -596,6 +655,57 @@
     }
     .gallery-placeholder .icon { font-size: 2rem; }
 
+    /* ── FAQ ── */
+    #faq {
+      background: var(--navy-deep);
+      padding: 6rem 2rem;
+    }
+    .faq-list {
+      max-width: 820px;
+      margin: 2.5rem auto 0;
+    }
+    .faq-item {
+      border-bottom: 1px solid rgba(200,151,42,0.18);
+    }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 1.5rem 3rem 1.5rem 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--parchment);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .faq-question:hover { color: var(--gold); }
+    .faq-question::after {
+      content: '+';
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--gold);
+      transition: transform 0.3s;
+      font-family: 'Lato', sans-serif;
+    }
+    .faq-item.open .faq-question::after {
+      transform: translateY(-50%) rotate(45deg);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .faq-answer-inner {
+      padding: 0 0 1.5rem;
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: rgba(245,237,216,0.7);
+    }
+
     /* ── CONTACT ── */
     #contact {
       background: var(--parchment);
@@ -964,6 +1074,49 @@
   </div>
 </section>
 
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-header reveal">
+    <span class="eyebrow" data-i18n="faq_eyebrow">Pertanyaan Umum</span>
+    <h2 data-i18n="faq_title">FAQ</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q1">Apakah Locate Cafe halal?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a1">Ya, seluruh hidangan dan minuman di Locate Cafe halal, sehingga nyaman dinikmati semua kalangan.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q2">Di mana lokasi Locate Cafe?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a2">Locate Cafe berlokasi di Jl. Karya No.257, Karang Berombak, Kec. Medan Barat, Kota Medan, Sumatera Utara 20115.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q3">Jam berapa Locate Cafe buka?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a3">Locate Cafe buka setiap hari kecuali Senin, dari pukul 12.00 hingga 22.00 WIB.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q4">Apakah Locate Cafe memiliki ruang VIP?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a4">Ya, tersedia Ruang VIP privat berkapasitas hingga 25 orang, dilengkapi AC, projector, wastafel pribadi, dan sound system dengan wireless mic. Cocok untuk rapat, ulang tahun, arisan, atau perayaan.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q5">Bagaimana cara memesan Ruang VIP?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a5">Anda dapat melakukan reservasi melalui formulir di halaman Fasilitas, dan tim kami akan menghubungi Anda via WhatsApp untuk konfirmasi ketersediaan serta informasi deposit.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q6">Fasilitas apa saja yang tersedia di Locate Cafe?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a6">Locate Cafe memiliki Ruang VIP (25 orang), area outdoor (hingga 55 orang), sudut santai dengan beanbag, dan panggung karaoke mini. Tersedia juga Wi-Fi gratis dan parkir gratis untuk pelanggan.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q7">Apakah tersedia tempat parkir dan Wi-Fi?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a7">Ya, Locate Cafe menyediakan parkir gratis dan Wi-Fi gratis untuk seluruh pelanggan.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)" data-i18n="faq_q8">Apakah Locate Cafe cocok untuk acara dan gathering?</button>
+      <div class="faq-answer"><div class="faq-answer-inner" data-i18n="faq_a8">Sangat cocok. Dengan ruang VIP, area outdoor luas, panggung karaoke, dan paket prasmanan untuk 6 atau 12 orang, Locate Cafe ideal untuk ulang tahun, arisan, rapat kerja, hingga perayaan keluarga.</div></div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
@@ -1048,6 +1201,20 @@
     document.getElementById('mobileNav').classList.remove('open');
   }
 
+  // ── FAQ ACCORDION ──
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const answer = btn.nextElementSibling;
+    const isOpen = item.classList.contains('open');
+    if (isOpen) {
+      item.classList.remove('open');
+      answer.style.maxHeight = null;
+    } else {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  }
+
   // ── MENU TABS ──
   function switchTab(btn, id) {
     document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
@@ -1105,6 +1272,23 @@
       contact_hours_label: 'Jam Buka', contact_hours: 'Setiap Hari (kecuali Senin) · 12.00 – 22.00 WIB',
       contact_cta_title: 'Hubungi Kami',
       cta_wa: 'Chat via WhatsApp', cta_email: 'Kirim Email', cta_book: 'Reservasi VIP Room',
+      faq_eyebrow: 'Pertanyaan Umum', faq_title: 'FAQ',
+      faq_q1: 'Apakah Locate Cafe halal?',
+      faq_a1: 'Ya, seluruh hidangan dan minuman di Locate Cafe halal, sehingga nyaman dinikmati semua kalangan.',
+      faq_q2: 'Di mana lokasi Locate Cafe?',
+      faq_a2: 'Locate Cafe berlokasi di Jl. Karya No.257, Karang Berombak, Kec. Medan Barat, Kota Medan, Sumatera Utara 20115.',
+      faq_q3: 'Jam berapa Locate Cafe buka?',
+      faq_a3: 'Locate Cafe buka setiap hari kecuali Senin, dari pukul 12.00 hingga 22.00 WIB.',
+      faq_q4: 'Apakah Locate Cafe memiliki ruang VIP?',
+      faq_a4: 'Ya, tersedia Ruang VIP privat berkapasitas hingga 25 orang, dilengkapi AC, projector, wastafel pribadi, dan sound system dengan wireless mic. Cocok untuk rapat, ulang tahun, arisan, atau perayaan.',
+      faq_q5: 'Bagaimana cara memesan Ruang VIP?',
+      faq_a5: 'Anda dapat melakukan reservasi melalui formulir di halaman Fasilitas, dan tim kami akan menghubungi Anda via WhatsApp untuk konfirmasi ketersediaan serta informasi deposit.',
+      faq_q6: 'Fasilitas apa saja yang tersedia di Locate Cafe?',
+      faq_a6: 'Locate Cafe memiliki Ruang VIP (25 orang), area outdoor (hingga 55 orang), sudut santai dengan beanbag, dan panggung karaoke mini. Tersedia juga Wi-Fi gratis dan parkir gratis untuk pelanggan.',
+      faq_q7: 'Apakah tersedia tempat parkir dan Wi-Fi?',
+      faq_a7: 'Ya, Locate Cafe menyediakan parkir gratis dan Wi-Fi gratis untuk seluruh pelanggan.',
+      faq_q8: 'Apakah Locate Cafe cocok untuk acara dan gathering?',
+      faq_a8: 'Sangat cocok. Dengan ruang VIP, area outdoor luas, panggung karaoke, dan paket prasmanan untuk 6 atau 12 orang, Locate Cafe ideal untuk ulang tahun, arisan, rapat kerja, hingga perayaan keluarga.',
       footer_rights: 'Seluruh hak dilindungi.'
     },
     en: {
@@ -1135,6 +1319,23 @@
       contact_hours_label: 'Opening Hours', contact_hours: 'Daily (except Monday) · 12:00 – 22:00 WIB',
       contact_cta_title: 'Get in Touch',
       cta_wa: 'Chat on WhatsApp', cta_email: 'Send an Email', cta_book: 'Reserve the VIP Room',
+      faq_eyebrow: 'Frequently Asked', faq_title: 'FAQ',
+      faq_q1: 'Is Locate Cafe halal?',
+      faq_a1: 'Yes, all food and drinks at Locate Cafe are halal, so everyone can enjoy them with peace of mind.',
+      faq_q2: 'Where is Locate Cafe located?',
+      faq_a2: 'Locate Cafe is at Jl. Karya No.257, Karang Berombak, Medan Barat, Medan City, North Sumatra 20115.',
+      faq_q3: 'What are Locate Cafe\'s opening hours?',
+      faq_a3: 'Locate Cafe is open every day except Monday, from 12:00 PM to 10:00 PM (WIB).',
+      faq_q4: 'Does Locate Cafe have a VIP room?',
+      faq_a4: 'Yes, there is a private VIP Room for up to 25 guests, complete with AC, a projector, a personal handbasin, and a sound system with wireless mics. Perfect for meetings, birthdays, gatherings, or celebrations.',
+      faq_q5: 'How do I book the VIP Room?',
+      faq_a5: 'You can reserve via the form on the Facilities page, and our team will contact you on WhatsApp to confirm availability and deposit details.',
+      faq_q6: 'What facilities does Locate Cafe offer?',
+      faq_a6: 'Locate Cafe has a VIP Room (25 guests), outdoor seating (up to 55 guests), a chill beanbag corner, and a mini karaoke stage. Free Wi-Fi and free parking are also available.',
+      faq_q7: 'Is parking and Wi-Fi available?',
+      faq_a7: 'Yes, Locate Cafe provides free parking and free Wi-Fi for all customers.',
+      faq_q8: 'Is Locate Cafe good for events and gatherings?',
+      faq_a8: 'Absolutely. With a VIP room, spacious outdoor area, karaoke stage, and buffet packages for 6 or 12 people, Locate Cafe is ideal for birthdays, gatherings, business meetings, and family celebrations.',
       footer_rights: 'All rights reserved.'
     },
     zh: {
@@ -1165,6 +1366,23 @@
       contact_hours_label: '营业时间', contact_hours: '每天（周一除外）· 12:00 – 22:00 WIB',
       contact_cta_title: '联系我们',
       cta_wa: 'WhatsApp 咨询', cta_email: '发送邮件', cta_book: '预订VIP包厢',
+      faq_eyebrow: '常见问题', faq_title: '常见问题',
+      faq_q1: 'Locate Cafe 是清真的吗？',
+      faq_a1: '是的，Locate Cafe 的所有餐点和饮品均为清真，大家都可以安心享用。',
+      faq_q2: 'Locate Cafe 在哪里？',
+      faq_a2: 'Locate Cafe 位于 Jl. Karya No.257, Karang Berombak, 西棉兰区, 棉兰市, 北苏门答腊 20115。',
+      faq_q3: 'Locate Cafe 的营业时间是？',
+      faq_a3: 'Locate Cafe 每天营业（周一除外），从中午12点到晚上10点（WIB）。',
+      faq_q4: 'Locate Cafe 有 VIP 包厢吗？',
+      faq_a4: '有的，我们提供最多可容纳25人的私人VIP包厢，配备空调、投影机、专属洗手盆，以及带无线麦克风的音响系统。非常适合会议、生日、聚会或庆典。',
+      faq_q5: '如何预订 VIP 包厢？',
+      faq_a5: '您可以通过设施页面的表单进行预订，我们的团队会通过WhatsApp与您联系，确认可用性及押金详情。',
+      faq_q6: 'Locate Cafe 有哪些设施？',
+      faq_a6: 'Locate Cafe 设有VIP包厢（25人）、户外座位区（最多55人）、懒人沙发休闲角，以及迷你卡拉OK舞台。还提供免费Wi-Fi和免费停车。',
+      faq_q7: '有停车位和 Wi-Fi 吗？',
+      faq_a7: '有的，Locate Cafe 为所有顾客提供免费停车和免费Wi-Fi。',
+      faq_q8: 'Locate Cafe 适合举办活动和聚会吗？',
+      faq_a8: '非常适合。凭借VIP包厢、宽敞的户外区域、卡拉OK舞台，以及6人或12人的自助套餐，Locate Cafe 是生日、聚会、商务会议和家庭庆典的理想之选。',
       footer_rights: '版权所有。'
     }
   };
